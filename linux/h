@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+# neco jako help
+# toto nakopirovat do cesty ~/../../usr/bin/
+# pri sekvenci klaves h,enter potom vypise napovedu, jake vsechny aliasy lze pouzit
+# protoze pri pocutu 20 a vice aliasu uz neni v lidskejch silach si to vsechno pamatovat
+cat ~/../../etc/bash.bashrc | grep "alias"
