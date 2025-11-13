@@ -1,18 +1,23 @@
 @echo off
-if "%1" == "" goto help
-if not exist %1 goto help
-REM jestlize neni parametr %1 ($1) a nebo je prazdny tak skoc na jdi navesti :help
-REM vypis usage a skonci
-REM v opacnem pripade proved prikaz %mpvs% z paramerem %1% nazev videa
-REm a skoc na label konec ( tzn. preskoc :help )
+setlocal enabledelayedexpansion
+set "IN=%~1"
+if exist "!IN!" (
 
-%mpvs% %1%
+REM jestlize neni parametr %~1 a nebo je prazdny "" tak skoc na navesti :help
+REM vypis usage a skonci
+REM v opacnem pripade proved prikaz %mpvs% z paramerem 1 nazev videa
+REM a pak skoc rovnou na label :konec ( tzn. preskoc :help )
+
+REM echo existuje "!IN!"
+%mpvs% "!IN!"
+REM nechat "!IN!" funguje pro nazvy z mezerama a specialnima znakama !
 goto konec
+)
+endlocal
 
 :help
-usage:
-echo mpvs video.mp4
-REM soubor mpvs.bat presunout do adresare Windows ( a nebo nekam jinam v cete %PATH% )
+echo mpvs "nejake video (1).mp4"
+REM soubor mpvs.bat presunout do adresare Windows ( a nebo nekam jinam v ceste %PATH% )
 REM predpoklada se ze uz je nadefinovana systemova promenna %mpvs% ( viz. screenshoty jinde ) 
 REM v konzoli zadat prikaz echo %PATH%
 

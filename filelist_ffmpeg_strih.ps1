@@ -2,8 +2,11 @@
 
 # filelist pro spojeni pomoci ffmpeg
 
+#$incld = "frag_*.mp4" # vsechny "mp4" z prexifex "frag_" a neco a pripona ".mp4"
+$incld = "*.mp4" # vsechny "mp4"
+
 $files = @()
-$files += @(Get-ChildItem -Include "*.mp4" -Name) | Sort-Object
+$files += @(Get-ChildItem -Include $incld -Name) #| Sort-Object
 $d_files = $files.Length
 #echo $d_files
 
@@ -26,7 +29,7 @@ echo $zapis_polozku
 $pole_out += $zapis_polozku
 }
 
-$file_output = "filelist-9.txt"
+$file_output = "filelist.txt"
 Set-Content -Path $file_output -Encoding ASCII -Value $pole_out
 sleep -Milliseconds 500
 
