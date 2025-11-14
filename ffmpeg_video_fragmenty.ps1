@@ -1,9 +1,7 @@
 ﻿cls
 
 # ffmpeg fragmenty videa
-
-Set-PSDebug -Strict # jakakoliv nedeklarovana promenna pri jejim zavolani napise chybu skriptu
-#echo $abcdefgh # test - Set-PSDebug -Strict
+Set-PSDebug -Strict # jakakoliv nedeklarovana promenna pri jejim zavolani udela chybu skriptu
 
 Remove-Variable video_input,vyraz -ErrorAction SilentlyContinue
 
@@ -18,7 +16,7 @@ Exit
 }
 
 
-# test jestli program nalezl utilitu "ffmpeg" aby bylo mozne vytvaret take souboru *.mp3 ( uspora mista na disku )
+# test jestli program nalezl utilitu "ffmpeg" aby bylo moze vytvaret take souboru *.mp3 ( uspora mista na disku )
 $prog = "ffmpeg"
 #$prog = "ffmpegXXXX" # testovaci
 if (-not ( Get-Command $prog -ErrorAction SilentlyContinue )){
@@ -31,7 +29,7 @@ Exit
 
 <#
 sou dve moznosti
-bud se mu zada nazev vstupniho videa jako argv[0]
+bud se mu zada nazev svstupniho videa jako argv[0]
 a kdyz ho nedostane tak se je uvnitr jeste zapta na nazev
 #>
 
@@ -106,14 +104,17 @@ $vyraz = $form.Tag
 
 $out_1 = "bylo vybrano"
 
+# nastaveni hodnoty verbose u vystupu z ffmpeg, viz scrennshoty
+$pole_lvl = @("quiet", "panic", "fatal", "error", "warning", "info", "verbose", "debug", "trace")
+#                0        1        2        3         4         5        6         7        8
+$lvl = $pole_lvl[4] # 4 bude asi optimalni (default=5)
 
 # easter egg ( velikonocni vajicko )
-if ( $video_input -like "nakej kokot kterej krade napady a pak si to dava u sebe na youtube a vydava to tam pred lidma ze stim prisel von.mp4" ){
+if ( $video_input -like "nakej kokot kterej krade napady a pak si to dava u sebe na youtube a vydava to tam pred lidma ze to vymyslel von.mp4" ){
 $vyraz = "9"
 echo "easter egg"
 sleep 3
 }
-
 
 # celkove pocet fragmenu je 27 ( protoze 4 fragmenty jsou spolecny, tyka se to voleb - 3,4,5 a  6,7,8 )
 # maj stejne nazev a akorat jsou ve switch 2x na ruznem miste
@@ -121,68 +122,68 @@ switch ( $vyraz ) {
     "0" {
         Write-Host "$out_1 0"
         # 1/4
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih/2:0:0" $prefix_name_output"leva_horni_ctvrtina.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih/2:iw/2:0" $prefix_name_output"prava_horni_ctvrtina.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih/2:iw/2:ih/2" $prefix_name_output"prava_dolni_ctvrtina.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih/2:0:ih/2" $prefix_name_output"leva_dolni_ctvrtina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih/2:0:0" $prefix_name_output"leva_horni_ctvrtina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih/2:iw/2:0" $prefix_name_output"prava_horni_ctvrtina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih/2:iw/2:ih/2" $prefix_name_output"prava_dolni_ctvrtina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih/2:0:ih/2" $prefix_name_output"leva_dolni_ctvrtina.mp4" -y
         break
     }
     "1" {
         Write-Host "$out_1 1"
         # 1/2 vertikalne
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih:0:0" $prefix_name_output"leva_pulka.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/2:ih:iw/2:0" $prefix_name_output"prava_pulka.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih:0:0" $prefix_name_output"leva_pulka.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/2:ih:iw/2:0" $prefix_name_output"prava_pulka.mp4" -y
         break
     }
     "2" {
         Write-Host "$out_1 2"
         # 1/2 horizontalne
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/2:0:0" $prefix_name_output"horni_pulka.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/2:0:ih/2" $prefix_name_output"dolni_pulka.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/2:0:0" $prefix_name_output"horni_pulka.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/2:0:ih/2" $prefix_name_output"dolni_pulka.mp4" -y
         break
     }
     "3" {
         Write-Host "$out_1 3"
         # 1/3 horizontalne
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/3:0:0" $prefix_name_output"horni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/3:0:ih/3" $prefix_name_output"prostredni_horizontalni_ttretina.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/3:0:2*ih/3" $prefix_name_output"dolni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/3:0:0" $prefix_name_output"horni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/3:0:ih/3" $prefix_name_output"prostredni_horizontalni_ttretina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/3:0:2*ih/3" $prefix_name_output"dolni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
         break
     }
     "4" {
         # 2/3 nahore a 1/3 dole
         Write-Host "$out_1 4"
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih*2/3:0:0" $prefix_name_output"horni_horizontalni_dve_tretiny.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/3:0:2*ih/3" $prefix_name_output"dolni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih*2/3:0:0" $prefix_name_output"horni_horizontalni_dve_tretiny.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/3:0:2*ih/3" $prefix_name_output"dolni_horizontalni_tretina.mp4" -y # spolecny 3,4,5
         break
     }
     "5" {
         Write-Host "$out_1 5"
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih/3:0:0" $prefix_name_output"horni_horizontalni_tretina.mp4" -y # spolecni 3,4,5
-        & ffmpeg -i $video_input -filter:v "crop=iw:ih*2/3:0:ih/3" $prefix_name_output"dolni_horizontalni_dve_tretiny.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih/3:0:0" $prefix_name_output"horni_horizontalni_tretina.mp4" -y # spolecni 3,4,5
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw:ih*2/3:0:ih/3" $prefix_name_output"dolni_horizontalni_dve_tretiny.mp4" -y
         break
     }
     "6" {
         Write-Host "$out_1 6"
-        & ffmpeg -i $video_input -filter:v "crop=iw/3:ih:0:0" $prefix_name_output"leva_vertikalni_tretina.mp4" -y # spolecny 6,7,8
-        & ffmpeg -i $video_input -filter:v "crop=iw*2/3:ih:iw/3:0" $prefix_name_output"dve_tretiny_vpravo.mp4" -y
-        # & ffmpeg -i $video_input -filter:v  "crop=iw*2/2.2:ih:iw/3:0" output_right_2-3-c.mp4 -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/3:ih:0:0" $prefix_name_output"leva_vertikalni_tretina.mp4" -y # spolecny 6,7,8
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw*2/3:ih:iw/3:0" $prefix_name_output"dve_tretiny_vpravo.mp4" -y
+        # & ffmpeg -loglevel $lvl -i $video_input -filter:v  "crop=iw*2/2.2:ih:iw/3:0" output_right_2-3-c.mp4 -y
         # lze zadavat i desetine cislo, zde napr. 2.2  ^
         # vice ukazek v souboru desetiny_2.bat
         break
     }
     "7" {
         Write-Host "$out_1 7"
-        & ffmpeg -i $video_input -filter:v "crop=iw*2/3:ih:0:0" $prefix_name_output"dve_tretiny_vlevo.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/3:ih:2*iw/3:0" $prefix_name_output"prava_vertikalni_tretina.mp4" -y # spolecny 6,7,8
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw*2/3:ih:0:0" $prefix_name_output"dve_tretiny_vlevo.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/3:ih:2*iw/3:0" $prefix_name_output"prava_vertikalni_tretina.mp4" -y # spolecny 6,7,8
         break
     }
     "8" {
         Write-Host "$out_1 8"
         # 1/3 verikalne
-        & ffmpeg -i $video_input -filter:v "crop=iw/3:ih:0:0" $prefix_name_output"leva_vertikalni_tretina.mp4" -y # spolecny 6,7,8
-        & ffmpeg -i $video_input -filter:v "crop=iw/3:ih:iw/3:0" $prefix_name_output"prostredni_vertikalni_tretina.mp4" -y
-        & ffmpeg -i $video_input -filter:v "crop=iw/3:ih:2*iw/3:0" $prefix_name_output"prava_vertikalni_tretina.mp4" -y # spolecny 6,7,8
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/3:ih:0:0" $prefix_name_output"leva_vertikalni_tretina.mp4" -y # spolecny 6,7,8
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/3:ih:iw/3:0" $prefix_name_output"prostredni_vertikalni_tretina.mp4" -y
+        & ffmpeg -loglevel $lvl -i $video_input -filter:v "crop=iw/3:ih:2*iw/3:0" $prefix_name_output"prava_vertikalni_tretina.mp4" -y # spolecny 6,7,8
         break
     }
     "9" {
@@ -193,7 +194,7 @@ switch ( $vyraz ) {
         $idx = $aa * 3 + $bb + 1
         $vf = 'crop=iw/3:ih/3:iw/3*' + $bb + ':ih/3*' + $aa
         #Write-Host "Creating $idx.mp4 (filter: $vf)"
-        & ffmpeg -y -i $video_input -vf $vf $prefix_name_output"$idx.mp4"
+        & ffmpeg -loglevel $lvl -y -i $video_input -vf $vf $prefix_name_output"$idx.mp4"
         }
         }
         echo "razeni segmentu je takto"
